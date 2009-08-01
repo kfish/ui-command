@@ -129,7 +129,9 @@ subMain cmd = do
 	handleSubCommand cmd allArgs
 
 showHelp :: (SubCommand a) => Command a -> [String] -> IO ()
-showHelp cmd _ = help cmd []
+showHelp cmd _ = do
+        help cmd []
+	exitWith ExitSuccess
 
 showVersion :: (SubCommand a) => Command a -> IO ()
 showVersion cmd = do
