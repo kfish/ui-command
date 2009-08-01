@@ -1,0 +1,20 @@
+Name:                subcommand
+Version:             0.1.0
+License:             BSD3
+Author:              Conrad Parker
+Synopsis:            Useful classes for commandline programs with subcommands
+Build-Type:          Simple
+Cabal-Version:       >= 1.2
+
+------------------------------------------------------------
+library
+    Build-Depends:   base
+    Exposed-modules: SubCommand
+
+------------------------------------------------------------
+-- hello example
+--
+
+Executable hello
+    Main-Is:         hello.hs
+    Hs-Source-Dirs:  ., examples

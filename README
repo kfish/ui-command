@@ -1,0 +1,37 @@
+
+SubCommand is a Haskell library for building commandline programs which have subcommands.
+
+This is common with revision control systems (cvs, svn, darcs, git etc.)
+
+SubCommand includes the following features:
+
+	Automatic generation of help text
+	Generation of manual pages
+	Examples
+	Checking of example syntax
+
+When you use a GUI program, you expect consistent behaviour:
+
+	* Title
+	* Menus listing available options
+	* Help
+
+Many GUI toolkits exist to make this task easier.
+
+SubCommand is a toolkit for developing commandline programs with consistent behaviour.
+
+It is useful for modern commandline programs to have consistent behavior:
+
+	* Print their name and usage information
+	* Explain options
+	* Provide clear, consistent documentation in various formats
+	* Provide contact details for submitting bug reports and feature requests
+
+There are many good reasons for developing a commandline version of your program:
+
+* Accessibility: Many blind users prefer to use a commandline version of software if available
+* Automation: Commandline tools can be easily used in scripts. You may not think it is useful
+to automate your software, but your power users might!
+
+If you have developed a library, subcommand provides a useful framework for demonstrating the
+library features.
