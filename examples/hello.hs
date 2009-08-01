@@ -1,5 +1,7 @@
 module Main where
 
+import Data.List (intersperse)
+
 import SubCommand
 
 data HelloSub = HelloSub {
@@ -26,6 +28,17 @@ worldMeth :: [String] -> IO ()
 worldMeth _ = putStrLn "Hello world!"
 
 ------------------------------------------------------------
+-- times
+--
+
+times = HelloSub "times" timesMeth "Cat Math"
+        "A repetition of salutation"
+
+timesMeth :: [String] -> IO ()
+timesMeth [] = return ()
+timesMeth (n:_) = putStrLn $ concat . intersperse " " $ take (read n) (repeat "hello")
+
+------------------------------------------------------------
 -- The command
 --
 
@@ -33,8 +46,8 @@ hello :: Command HelloSub
 hello = Command "hello" "0.1"
         "bugs@example.com"
         "Subcommand example program"
-	["Greetings"]
-	[world]
+	["Greetings", "Cat Math"]
+	[world, times]
 
 ------------------------------------------------------------
 -- Main
