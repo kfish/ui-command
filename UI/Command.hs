@@ -77,12 +77,15 @@ data Command = Command {
     -- Categories to show in help text, in order of appearance
     commandCategories :: [String],
 
+    -- Related commands
+    commandSeeAlso :: [String],
+
     -- The actual subcommands
     commandSubs :: [SubCommand]
 }
 
 instance Default Command where
-    def = Command "<undocumented command>" "0.0" def def def def def def
+    def = Command "<undocumented command>" "0.0" def def def def def def def
 
 ------------------------------------------------------------
 -- SubCommand class
@@ -216,11 +219,19 @@ longMan cmd dateStamp [] =
         synopsisMan cmd "SUBCOMMAND" [] ++
         descMan (".B " ++ commandName cmd ++ "\n" ++ commandLongDesc cmd) ++
         map (categoryMan cmd) (commandCategories cmd) ++
-	authorsMan cmd ""
+	authorsMan cmd "" ++
+        seeAlsoMan cmd
 
 longMan cmd dateStamp (command:_) = contextMan cmd dateStamp command m
     where
         m = filter (\x -> subName x == command) (commandSubs cmd)
+
+-- | Provide a list of related commands
+seeAlsoMan :: Command -> [String]
+seeAlsoMan cmd
+        | commandSeeAlso cmd == def = []
+        | otherwise = [".SH \"SEE ALSO\"\n\n.PP\n"] ++
+                      map (\x -> "\\fB"++x++"\\fR(1)\n") (commandSeeAlso cmd)
 
 -- | Provide synopses for a specific category of commands
 categoryMan :: Command -> String -> String

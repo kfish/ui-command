@@ -47,6 +47,7 @@ hello = def {
                 commandShortDesc = "Subcommand example program",
                 commandLongDesc = longDesc,
 	        commandCategories = ["Greetings", "Cat Math"],
+		commandSeeAlso = ["tractorgen"],
 	        commandSubs = [world, times]
 	}
 
