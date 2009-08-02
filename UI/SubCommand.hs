@@ -93,7 +93,7 @@ data SubCommand  = SubCommand {
     subMethod :: [String] -> IO (),
     subCategory :: String,
     subSynopsis :: String,
-    subDescription :: String,
+    subShortDesc :: String,
 
     -- [(example description, args)]
     subExamples :: [(String, String)]
@@ -115,7 +115,7 @@ internalSubs = [helpSub, manSub]
 --
 
 helpSub :: SubCommand
-helpSub = def {subName = "help", subSynopsis="Display help for a specific subcommand"}
+helpSub = def {subName = "help", subShortDesc = "Display help for a specific subcommand"}
 
 help :: Command -> [String] -> IO ()
 help cmd args = mapM_ putStr $ longHelp cmd args
@@ -143,8 +143,8 @@ categoryHelp cmd c = c ++ ":\n" ++ concat (map itemHelp items) ++ "\n"
 internalHelp :: Command -> String
 internalHelp cmd = unlines $ "Miscellaneous:" : map itemHelp internalSubs
 
--- | One-line format for a command and its synopsis
-itemHelp i = printf "  %-14s%s\n" (subName i) (subSynopsis i)
+-- | One-line format for a command
+itemHelp i = printf "  %-14s%s\n" (subName i) (subShortDesc i)
 
 -- | Provide detailed help for a specific command
 contextHelp :: Command -> [Char] -> [SubCommand] -> [String]
@@ -155,9 +155,9 @@ contextHelp cmd command (item:_) = synopsis ++ usage ++ description ++ examples
         hasOpts "help" = " command"
         hasOpts _ = " [options]"
         synopsis = [(commandName cmd) ++ " " ++ command ++ ": " ++ subSynopsis item ++ "\n"]
-        description = case (subDescription item) of
+        description = case (subShortDesc item) of
                     "" -> []
-                    _  -> ["\n" ++ indent 2 (subDescription item)]
+                    _  -> ["\n" ++ indent 2 (subShortDesc item)]
         examples = case (subExamples item) of
                      [] -> []
                      _  -> ["\nExamples:"] ++
@@ -170,7 +170,7 @@ contextHelp cmd command (item:_) = synopsis ++ usage ++ description ++ examples
 --
 
 manSub :: SubCommand
-manSub = def {subName="man", subSynopsis="Generate Unix man page for specific subcommand"}
+manSub = def {subName = "man", subShortDesc = "Generate Unix man page for specific subcommand"}
 
 man :: Command -> [String] -> IO ()
 man cmd args = do
@@ -230,8 +230,8 @@ contextMan cmd dateStamp command i@(item:_) =
         examples ++
 	authorsMan cmd command
     where
-        description | subDescription item == "" = []
-                    | otherwise = ["\n" ++ subDescription item]
+        description | subShortDesc item == "" = []
+                    | otherwise = ["\n" ++ subShortDesc item]
         examples | subExamples item == [] = []
                  | otherwise = ["\n.SH ExAMPLES\n"] ++
                                flip map (subExamples item) (\(desc, opts) ->

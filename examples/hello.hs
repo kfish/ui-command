@@ -13,7 +13,7 @@ world = def {
        	        subName = "world",
                 subMethod = worldMethod,
                 subCategory = "Greetings",
-                subSynopsis = "An implementation of the standard software greeting."
+                subShortDesc = "An implementation of the standard software greeting."
         }
 
 worldMethod :: [String] -> IO ()
@@ -27,7 +27,7 @@ times = def {
        	        subName = "times",
                 subMethod = timesMethod,
                 subCategory = "Cat Math",
-                subSynopsis = "A repetition of salutation",
+                subShortDesc = "A repetition of salutation",
                 subExamples = [("Say hello 7 times", "7"), ("Say hello 3 times", "3")]
         }
 
