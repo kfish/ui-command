@@ -8,6 +8,7 @@ import System.Environment (getArgs)
 import System.Exit
 
 import UI.Command.Command
+import UI.Command.Doc
 
 ------------------------------------------------------------
 -- subMain

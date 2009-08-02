@@ -11,6 +11,7 @@ library
     Build-Depends:   base, time, old-locale, data-default
     Exposed-modules: UI.Command
     Other-modules:   UI.Command.Command
+                     UI.Command.Doc
                      UI.Command.Main
                      UI.Command.Render
 
