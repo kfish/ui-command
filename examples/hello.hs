@@ -41,11 +41,15 @@ timesMethod (n:_) = putStrLn $ concat . intersperse " " $ take (read n) (repeat 
 hello = def {
 	        commandName = "hello",
                 commandVersion = "0.1",
+		commandAuthors = ["Joe R. Hacker"],
                 commandBugEmail = "bugs@example.com",
-                commandDesc = "Subcommand example program",
+                commandShortDesc = "Subcommand example program",
+                commandLongDesc = longDesc,
 	        commandCategories = ["Greetings", "Cat Math"],
 	        commandSubs = [world, times]
 	}
+
+longDesc = "a demonstration program for the UI.Command framework."
 
 ------------------------------------------------------------
 -- Main
