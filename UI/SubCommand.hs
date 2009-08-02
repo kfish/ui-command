@@ -68,7 +68,7 @@ class SubCommand a where
     subMethod _ _ = putStrLn "Unimplemented command"
 
     subCategory :: a -> String
-    subSynopsis _ = ""
+    subCategory _ = ""
 
     subSynopsis :: a -> String
     subSynopsis _ = ""
@@ -81,14 +81,27 @@ class SubCommand a where
     subExamples _ = []
 
 ------------------------------------------------------------
+-- subInternal
+--
+
+data SubInternal = SubInternal {
+        siName :: String,
+        siSynopsis :: String
+}
+
+instance SubCommand SubInternal where
+        subName = siName
+	subMethod _ _ = return ()
+	subSynopsis = siSynopsis
+
+internalSubs = [helpSub]
+
+------------------------------------------------------------
 -- Help
 --
 
-{-
-helpSub :: SubCommand
-helpSub = SubCommand "help" help
-    "Commands" ("Display help for a specific subcommand (eg. \"" ++ progname ++ " help dump\")")
--}
+helpSub :: SubInternal
+helpSub = SubInternal "help" "Display help for a specific subcommand"
 
 help :: (SubCommand a) => Command a -> [String] -> IO ()
 help cmd args = mapM_ putStr $ longHelp cmd args
@@ -99,6 +112,7 @@ longHelp cmd [] =
     ["Usage: " ++ (commandName cmd) ++ " [--version] [--help] command [args]\n\n"] ++
     [indent 2 (commandDesc cmd), "\n"] ++
     map (categoryHelp cmd) (commandCategories cmd) ++
+    [internalHelp cmd] ++
     ["Please report bugs to <" ++ commandBugEmail cmd ++ ">\n"]
 
 -- | "cmd help command": Give command-specific help
@@ -110,7 +124,13 @@ categoryHelp :: (SubCommand a) => Command a -> String -> String
 categoryHelp cmd c = c ++ ":\n" ++ concat (map itemHelp items) ++ "\n"
      where
         items = filter (\x -> subCategory x == c) (commandSubs cmd)
-        itemHelp i = printf "  %-14s%s\n" (subName i) (subSynopsis i)
+
+-- | Provide synopses for internal commands
+internalHelp :: (SubCommand a) => Command a -> String
+internalHelp cmd = unlines $ "Miscellaneous:" : map itemHelp internalSubs
+
+-- | One-line format for a command and its synopsis
+itemHelp i = printf "  %-14s%s\n" (subName i) (subSynopsis i)
 
 -- | Provide detailed help for a specific command
 contextHelp :: (SubCommand a) => Command a -> [Char] -> [a] -> [String]
@@ -166,7 +186,7 @@ showVersion cmd = do
         exitWith ExitSuccess
 
 handleSubCommand :: (SubCommand a) => Command a -> [String] -> IO ()
-handleSubCommand cmd [] = showHelp cmd [""]
+handleSubCommand cmd [] = showHelp cmd []
 -- handleSubCommand cmd [_] = showHelp cmd [""]
 
 handleSubCommand cmd (command:rest)
@@ -174,5 +194,5 @@ handleSubCommand cmd (command:rest)
         | otherwise = act ss
         where
 	        ss = filter (\x -> subName x == command) (commandSubs cmd)
-	        act [] = help cmd []
+	        act [] = help cmd [command]
 		act (s:_) = (subMethod s) rest
