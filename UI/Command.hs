@@ -215,11 +215,18 @@ longMan cmd dateStamp [] =
         [commandName cmd, " \\- ", commandShortDesc cmd, "\n\n"] ++
         synopsisMan cmd "SUBCOMMAND" [] ++
         descMan (".B " ++ commandName cmd ++ "\n" ++ commandLongDesc cmd) ++
+        map (categoryMan cmd) (commandCategories cmd) ++
 	authorsMan cmd ""
 
 longMan cmd dateStamp (command:_) = contextMan cmd dateStamp command m
     where
         m = filter (\x -> subName x == command) (commandSubs cmd)
+
+-- | Provide synopses for a specific category of commands
+categoryMan :: Command -> String -> String
+categoryMan cmd c = ".SH " ++ (map toUpper c) ++ "\n" ++ concat (map itemMan items) ++ "\n"
+  where items = filter (\x -> subCategory x == c) (commandSubs cmd)
+        itemMan i = printf ".IP %s\n%s\n" (subName i) (subShortDesc i)
 
 contextMan :: Command -> String -> [Char] -> [SubCommand] -> [String]
 contextMan cmd dateStamp _ [] = longMan cmd dateStamp []
