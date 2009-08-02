@@ -9,7 +9,7 @@ Cabal-Version:       >= 1.2
 ------------------------------------------------------------
 library
     Build-Depends:   base
-    Exposed-modules: SubCommand
+    Exposed-modules: UI.SubCommand
 
 ------------------------------------------------------------
 -- hello example

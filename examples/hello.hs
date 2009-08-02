@@ -2,7 +2,7 @@ module Main where
 
 import Data.List (intersperse)
 
-import SubCommand
+import UI.SubCommand
 
 data HelloSub = HelloSub {
         helloName :: String,

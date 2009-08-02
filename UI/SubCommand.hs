@@ -1,4 +1,4 @@
-module SubCommand (
+module UI.SubCommand (
         Command (..),
 	SubCommand (..),
 	subMain
