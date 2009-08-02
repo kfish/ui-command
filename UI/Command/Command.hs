@@ -28,6 +28,9 @@ data Command = Command {
     -- Categories to show in help text, in order of appearance
     commandCategories :: [String],
 
+    -- Project that this command is part of
+    commandProject :: String,
+
     -- Related commands
     commandSeeAlso :: [String],
 
@@ -36,7 +39,7 @@ data Command = Command {
 }
 
 instance Default Command where
-    def = Command "<undocumented command>" "0.0" def def def def def def def
+    def = Command "<undocumented command>" "0.0" def def def def def def def def
 
 ------------------------------------------------------------
 -- SubCommand class
