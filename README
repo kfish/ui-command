@@ -1,9 +1,9 @@
 
-SubCommand is a Haskell library for building commandline programs which have subcommands.
+UI.Command is a Haskell library for building commandline programs which have subcommands.
 
 This is common with revision control systems (cvs, svn, darcs, git etc.)
 
-SubCommand includes the following features:
+UI.Command includes the following features:
 
 	Automatic generation of help text
 	Generation of manual pages
@@ -18,7 +18,7 @@ When you use a GUI program, you expect consistent behaviour:
 
 Many GUI toolkits exist to make this task easier.
 
-SubCommand is a toolkit for developing commandline programs with consistent behaviour.
+UI.Command is a toolkit for developing commandline programs with consistent behaviour.
 
 It is useful for modern commandline programs to have consistent behavior:
 

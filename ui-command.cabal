@@ -1,8 +1,24 @@
 Name:                ui-command
 Version:             0.1.0
 License:             BSD3
-Author:              Conrad Parker
-Synopsis:            Framework for making friendly commandline programs
+Author:              Conrad Parker <conrad@metadecks.org>
+Category:            Development
+Synopsis:            A framework for friendly commandline programs
+Description:         This is a framework for creating commandline applications. It
+		     provides various features which give a polished feel to your
+		     application.
+		     .
+                     It is designed to encourage you to provide clear documentation
+		     and working examples. It implements default ''help''
+		     and ''man'' commands for your application, which will layout help
+		     text and generate Unix-style man pages.
+		     .
+                     It provides special handling for applications of the form
+		     ''program command args'', the style of interaction common in revision
+		     control systems. It will dispatch to handler functions that you
+		     provide for each command, and also provide command-specific
+		     help to the user.
+Stability:           experimental
 Build-Type:          Simple
 Cabal-Version:       >= 1.2
 
