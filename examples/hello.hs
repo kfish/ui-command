@@ -1,28 +1,20 @@
 module Main where
 
+import Data.Default (def)
 import Data.List (intersperse)
 
 import UI.SubCommand
-
-data HelloSub = HelloSub {
-        helloName :: String,
-	helloMethod :: [String] -> IO (),
-	helloCategory :: String,
-	helloSynopsis :: String
-}
-
-instance SubCommand HelloSub where
-        subName = helloName
-	subMethod = helloMethod
-	subCategory = helloCategory
-	subSynopsis = helloSynopsis
 
 ------------------------------------------------------------
 -- world
 --
 
-world = HelloSub "world" worldMethod "Greetings"
-        "An implementation of the standard software greeting."
+world = def {
+       	        subName = "world",
+                subMethod = worldMethod,
+                subCategory = "Greetings",
+                subSynopsis = "An implementation of the standard software greeting."
+        }
 
 worldMethod :: [String] -> IO ()
 worldMethod _ = putStrLn "Hello world!"
@@ -31,8 +23,12 @@ worldMethod _ = putStrLn "Hello world!"
 -- times
 --
 
-times = HelloSub "times" timesMethod "Cat Math"
-        "A repetition of salutation"
+times = def {
+       	        subName = "times",
+                subMethod = timesMethod,
+                subCategory = "Cat Math",
+                subSynopsis = "A repetition of salutation"
+        }
 
 timesMethod :: [String] -> IO ()
 timesMethod [] = return ()
@@ -42,12 +38,14 @@ timesMethod (n:_) = putStrLn $ concat . intersperse " " $ take (read n) (repeat 
 -- The command
 --
 
-hello :: Command HelloSub
-hello = Command "hello" "0.1"
-        "bugs@example.com"
-        "Subcommand example program"
-	["Greetings", "Cat Math"]
-	[world, times]
+hello = def {
+	        commandName = "hello",
+                commandVersion = "0.1",
+                commandBugEmail = "bugs@example.com",
+                commandDesc = "Subcommand example program",
+	        commandCategories = ["Greetings", "Cat Math"],
+	        commandSubs = [world, times]
+	}
 
 ------------------------------------------------------------
 -- Main
