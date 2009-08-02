@@ -1,15 +1,15 @@
-Name:                subcommand
+Name:                ui-command
 Version:             0.1.0
 License:             BSD3
 Author:              Conrad Parker
-Synopsis:            Useful classes for commandline programs with subcommands
+Synopsis:            Framework for making friendly commandline programs
 Build-Type:          Simple
 Cabal-Version:       >= 1.2
 
 ------------------------------------------------------------
 library
     Build-Depends:   base, time, old-locale, data-default
-    Exposed-modules: UI.SubCommand
+    Exposed-modules: UI.Command
 
 ------------------------------------------------------------
 -- hello example

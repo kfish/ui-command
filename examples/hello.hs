@@ -3,7 +3,7 @@ module Main where
 import Data.Default (def)
 import Data.List (intersperse)
 
-import UI.SubCommand
+import UI.Command
 
 ------------------------------------------------------------
 -- world
