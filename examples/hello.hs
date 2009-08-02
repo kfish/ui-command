@@ -11,13 +11,13 @@ import UI.Command
 
 world = def {
        	        subName = "world",
-                subMethod = worldMethod,
+                subHandler = worldHandler,
                 subCategory = "Greetings",
                 subShortDesc = "An implementation of the standard software greeting."
         }
 
-worldMethod :: [String] -> IO ()
-worldMethod _ = putStrLn "Hello world!"
+worldHandler :: [String] -> IO ()
+worldHandler _ = putStrLn "Hello world!"
 
 ------------------------------------------------------------
 -- times
@@ -25,15 +25,15 @@ worldMethod _ = putStrLn "Hello world!"
 
 times = def {
        	        subName = "times",
-                subMethod = timesMethod,
+                subHandler = timesHandler,
                 subCategory = "Cat Math",
                 subShortDesc = "A repetition of salutation",
                 subExamples = [("Say hello 7 times", "7"), ("Say hello 3 times", "3")]
         }
 
-timesMethod :: [String] -> IO ()
-timesMethod [] = return ()
-timesMethod (n:_) = putStrLn $ concat . intersperse " " $ take (read n) (repeat "hello")
+timesHandler :: [String] -> IO ()
+timesHandler [] = return ()
+timesHandler (n:_) = putStrLn $ concat . intersperse " " $ take (read n) (repeat "hello")
 
 ------------------------------------------------------------
 -- The command

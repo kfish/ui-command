@@ -44,7 +44,7 @@ instance Default Command where
 
 data SubCommand  = SubCommand {
     subName :: String,
-    subMethod :: [String] -> IO (),
+    subHandler :: [String] -> IO (),
     subCategory :: String,
     subSynopsis :: String,
     subShortDesc :: String,

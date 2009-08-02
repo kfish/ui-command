@@ -54,4 +54,4 @@ handleSubCommand cmd (command:rest)
         where
 	        ss = filter (\x -> subName x == command) (commandSubs cmd)
 	        act [] = help cmd [command]
-		act (s:_) = (subMethod s) rest
+		act (s:_) = (subHandler s) rest
