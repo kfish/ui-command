@@ -123,11 +123,12 @@ help cmd args = mapM_ putStr $ longHelp cmd args
 longHelp :: Command -> [String] -> [String]
 -- | "cmd help" with no arguments: Give a list of all subcommands
 longHelp cmd [] =
+    [commandShortDesc cmd ++ "\n"] ++
     ["Usage: " ++ (commandName cmd) ++ " [--version] [--help] command [args]\n\n"] ++
     [indent 2 (commandLongDesc cmd), "\n"] ++
     map (categoryHelp cmd) (commandCategories cmd) ++
     [internalHelp cmd] ++
-    ["Please report bugs to <" ++ commandBugEmail cmd ++ ">\n"]
+    ["\nPlease report bugs to <" ++ commandBugEmail cmd ++ ">\n"]
 
 -- | "cmd help command": Give command-specific help
 longHelp cmd (command:_) = contextHelp cmd command m
@@ -135,7 +136,7 @@ longHelp cmd (command:_) = contextHelp cmd command m
 
 -- | Provide synopses for a specific category of commands
 categoryHelp :: Command -> String -> String
-categoryHelp cmd c = c ++ ":\n" ++ concat (map itemHelp items) ++ "\n"
+categoryHelp cmd c = c ++ ":\n" ++ unlines (map itemHelp items) ++ "\n"
      where
         items = filter (\x -> subCategory x == c) (commandSubs cmd)
 
@@ -144,7 +145,7 @@ internalHelp :: Command -> String
 internalHelp cmd = unlines $ "Miscellaneous:" : map itemHelp internalSubs
 
 -- | One-line format for a command
-itemHelp i = printf "  %-14s%s\n" (subName i) (subShortDesc i)
+itemHelp i = printf "  %-14s%s" (subName i) (subShortDesc i)
 
 -- | Provide detailed help for a specific command
 contextHelp :: Command -> [Char] -> [SubCommand] -> [String]
