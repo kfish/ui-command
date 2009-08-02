@@ -21,22 +21,22 @@ instance SubCommand HelloSub where
 -- world
 --
 
-world = HelloSub "world" worldMeth "Greetings"
+world = HelloSub "world" worldMethod "Greetings"
         "An implementation of the standard software greeting."
 
-worldMeth :: [String] -> IO ()
-worldMeth _ = putStrLn "Hello world!"
+worldMethod :: [String] -> IO ()
+worldMethod _ = putStrLn "Hello world!"
 
 ------------------------------------------------------------
 -- times
 --
 
-times = HelloSub "times" timesMeth "Cat Math"
+times = HelloSub "times" timesMethod "Cat Math"
         "A repetition of salutation"
 
-timesMeth :: [String] -> IO ()
-timesMeth [] = return ()
-timesMeth (n:_) = putStrLn $ concat . intersperse " " $ take (read n) (repeat "hello")
+timesMethod :: [String] -> IO ()
+timesMethod [] = return ()
+timesMethod (n:_) = putStrLn $ concat . intersperse " " $ take (read n) (repeat "hello")
 
 ------------------------------------------------------------
 -- The command
