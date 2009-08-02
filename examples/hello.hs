@@ -27,7 +27,8 @@ times = def {
        	        subName = "times",
                 subMethod = timesMethod,
                 subCategory = "Cat Math",
-                subSynopsis = "A repetition of salutation"
+                subSynopsis = "A repetition of salutation",
+                subExamples = [("Say hello 7 times", "7"), ("Say hello 3 times", "3")]
         }
 
 timesMethod :: [String] -> IO ()
