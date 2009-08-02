@@ -8,7 +8,7 @@ Cabal-Version:       >= 1.2
 
 ------------------------------------------------------------
 library
-    Build-Depends:   base
+    Build-Depends:   base, time, old-locale
     Exposed-modules: UI.SubCommand
 
 ------------------------------------------------------------

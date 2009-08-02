@@ -6,11 +6,15 @@ module UI.SubCommand (
 
 import Control.Monad (when)
 
-import Data.Char (isSpace)
+import Data.Char (isSpace, toUpper)
 import Data.List (intersperse)
 
 import System.Environment (getArgs)
 import System.Exit
+
+import System.Locale (defaultTimeLocale)
+import Data.Time.Format (formatTime)
+import Data.Time.Clock (getCurrentTime)
 
 import Text.Printf (printf)
 
@@ -25,6 +29,12 @@ indent :: Int -> String -> String
 indent i s = unlines $ map (\x -> indentation ++ x) (lines s)
     where
         indentation = take i $ repeat ' '
+
+quote :: String -> String
+quote = surround "\""
+
+surround :: [a] -> [a] -> [a]
+surround c s = concat [c, s, c]
 
 -- breakLines leftIndent columnWidth text
 breakLines :: Int -> String -> String
@@ -94,7 +104,7 @@ instance SubCommand SubInternal where
 	subMethod _ _ = return ()
 	subSynopsis = siSynopsis
 
-internalSubs = [helpSub]
+internalSubs = [helpSub, manSub]
 
 ------------------------------------------------------------
 -- Help
@@ -151,6 +161,36 @@ contextHelp cmd command (item:_) = synopsis ++ usage ++ description ++ examples
                              "\n  " ++ desc ++ ":\n    " ++ (commandName cmd) ++ " " ++ command ++
                              " " ++ opts ++ "\n")
 
+------------------------------------------------------------
+-- man
+--
+
+manSub :: SubInternal
+manSub = SubInternal "man" "Generate Unix man page for specific subcommand"
+
+man :: (SubCommand a) => Command a -> [String] -> IO ()
+man cmd args = do
+        currentTime <- getCurrentTime
+	let dateStamp = formatTime defaultTimeLocale "%B %Y" currentTime
+	mapM_ putStrLn $ longMan cmd dateStamp args
+
+headerMan :: (SubCommand a) => Command a -> String -> [String]
+headerMan cmd dateStamp = [unwords [".TH", u, "1", quote dateStamp, quote "Flim!", "\n"]]
+    where
+        u = map toUpper (commandName cmd)
+
+longMan :: (SubCommand a) => Command a -> String -> [String] -> [String]
+longMan cmd dateStamp [] =
+        headerMan cmd dateStamp
+
+longMan cmd dateStamp (command:_) = contextMan cmd dateStamp command m
+    where
+        m = filter (\x -> subName x == command) (commandSubs cmd)
+
+contextMan :: (SubCommand a) => Command a -> String -> [Char] -> [a] -> [String]
+contextMan cmd dateStamp _ [] = longMan cmd dateStamp []
+contextMan cmd dateStamp command i@(item:_) =
+        headerMan cmd dateStamp
 
 ------------------------------------------------------------
 -- subMain
@@ -191,6 +231,7 @@ handleSubCommand cmd [] = showHelp cmd []
 
 handleSubCommand cmd (command:rest)
         | command == "help" = help cmd rest
+        | command == "man" = man cmd rest
         | otherwise = act ss
         where
 	        ss = filter (\x -> subName x == command) (commandSubs cmd)
