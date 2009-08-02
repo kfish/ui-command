@@ -1,49 +1,67 @@
 module UI.Command.Command (
-        Command (..),
+        Application (..),
 	SubCommand (..),
 ) where
 
 import Data.Default
 
 ------------------------------------------------------------
--- Command class
+-- Application class
 --
 
--- | A Command
-data Command = Command {
+-- | It is often simpler to use the default implementation of Application, and
+-- override it with the details you choose to use.
+-- For example, an implementation of the "hello" command:
+--
+-- > hello = def {
+-- >         appName = "hello",
+-- >         appVersion = "0.1",
+-- >         appAuthors = ["Joe R. Hacker"],
+-- >         appBugEmail = "bugs@example.com",
+-- >         appShortDesc = "UI.Command example program",
+-- >         appLongDesc = longDesc,
+-- >         appCategories = ["Greetings", "Cat Math"],
+-- >         appSeeAlso = ["tractorgen"],
+-- >         appProject = "Haskell",
+-- >         appSubs = [world, times]
+-- > }
+-- > 
+-- > longDesc = "a demonstration program for the UI.Command framework."
+--
+data Application = Application {
     -- | Name of the program
-    commandName :: String,
+    appName :: String,
 
     -- | Software version
-    commandVersion :: String,
+    appVersion :: String,
 
     -- | Email address to report bugs to
-    commandBugEmail :: String,
+    appBugEmail :: String,
 
     -- | Names of authors
-    commandAuthors :: [String],
+    appAuthors :: [String],
 
     -- | One-line description of the command
-    commandShortDesc :: String,
+    appShortDesc :: String,
 
     -- | Long description of the command
-    commandLongDesc :: String,
+    appLongDesc :: String,
 
     -- | Categories to show in help text, in order of appearance
-    commandCategories :: [String],
+    appCategories :: [String],
 
     -- | Project that this command is part of
-    commandProject :: String,
+    appProject :: String,
 
     -- | Related commands
-    commandSeeAlso :: [String],
+    appSeeAlso :: [String],
 
     -- | The actual subcommands
-    commandSubs :: [SubCommand]
+    appSubs :: [SubCommand]
 }
 
-instance Default Command where
-    def = Command "<undocumented command>" "0.0" def def def def def def def def
+instance Default Application where
+    def = Application "<undocumented command>" "0.0" def def def def def def def def
 
 ------------------------------------------------------------
 -- SubCommand class

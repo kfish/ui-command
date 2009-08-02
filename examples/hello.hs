@@ -40,16 +40,16 @@ timesHandler (n:_) = putStrLn $ concat . intersperse " " $ take (read n) (repeat
 --
 
 hello = def {
-	        commandName = "hello",
-                commandVersion = "0.1",
-		commandAuthors = ["Joe R. Hacker"],
-                commandBugEmail = "bugs@example.com",
-                commandShortDesc = "Subcommand example program",
-                commandLongDesc = longDesc,
-	        commandCategories = ["Greetings", "Cat Math"],
-		commandSeeAlso = ["tractorgen"],
-		commandProject = "Haskell",
-	        commandSubs = [world, times]
+	        appName = "hello",
+                appVersion = "0.1",
+		appAuthors = ["Joe R. Hacker"],
+                appBugEmail = "bugs@example.com",
+                appShortDesc = "UI.Command example program",
+                appLongDesc = longDesc,
+	        appCategories = ["Greetings", "Cat Math"],
+		appSeeAlso = ["tractorgen"],
+		appProject = "Haskell",
+	        appSubs = [world, times]
 	}
 
 longDesc = "a demonstration program for the UI.Command framework."

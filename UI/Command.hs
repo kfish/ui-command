@@ -1,5 +1,5 @@
 module UI.Command (
-        Command (..),
+        Application (..),
 	SubCommand (..),
 	subMain
 ) where

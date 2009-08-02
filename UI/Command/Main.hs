@@ -26,24 +26,24 @@ isHelp x = elem x helpStrings
 isVersion :: String -> Bool
 isVersion x = elem x versionStrings
 
-subMain :: Command -> IO ()
+subMain :: Application -> IO ()
 subMain cmd = do
         allArgs <- getArgs
 	when (any isHelp allArgs) $ showHelp cmd allArgs
 	when (any isVersion allArgs) $ showVersion cmd
 	handleSubCommand cmd allArgs
 
-showHelp :: Command -> [String] -> IO ()
+showHelp :: Application -> [String] -> IO ()
 showHelp cmd args = do
         help cmd args
 	exitWith ExitSuccess
 
-showVersion :: Command -> IO ()
+showVersion :: Application -> IO ()
 showVersion cmd = do
-        putStrLn $ commandName cmd ++ " " ++ commandVersion cmd
+        putStrLn $ appName cmd ++ " " ++ appVersion cmd
         exitWith ExitSuccess
 
-handleSubCommand :: Command -> [String] -> IO ()
+handleSubCommand :: Application -> [String] -> IO ()
 handleSubCommand cmd [] = showHelp cmd []
 -- handleSubCommand cmd [_] = showHelp cmd [""]
 
@@ -52,6 +52,6 @@ handleSubCommand cmd (command:rest)
         | command == "man" = man cmd rest
         | otherwise = act ss
         where
-	        ss = filter (\x -> subName x == command) (commandSubs cmd)
+	        ss = filter (\x -> subName x == command) (appSubs cmd)
 	        act [] = help cmd [command]
 		act (s:_) = (subHandler s) rest
