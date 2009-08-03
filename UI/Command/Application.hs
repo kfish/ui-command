@@ -24,7 +24,7 @@ import UI.Command.Command
 -- >         appCategories = ["Greetings", "Cat Math"],
 -- >         appSeeAlso = ["tractorgen"],
 -- >         appProject = "Haskell",
--- >         appSubs = [world, times]
+-- >         appCmds = [world, times]
 -- > }
 -- > 
 -- > longDesc = "a demonstration program for the UI.Command framework."
@@ -57,8 +57,8 @@ data Application = Application {
     -- | Related commands
     appSeeAlso :: [String],
 
-    -- | The actual subcommands
-    appSubs :: [SubCommand]
+    -- | The actual commands
+    appCmds :: [Command]
 }
 
 instance Default Application where

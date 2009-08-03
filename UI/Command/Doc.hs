@@ -16,108 +16,108 @@ import UI.Command.Command
 import UI.Command.Render
 
 ------------------------------------------------------------
--- internal subcommands
+-- internal cmdcommands
 --
 
-internalSubs = [helpSub, manSub]
+internalCmds = [helpCmd, manCmd]
 
 ------------------------------------------------------------
 -- Help
 --
 
-helpSub :: SubCommand
-helpSub = def {subName = "help", subShortDesc = "Display help for a specific subcommand"}
+helpCmd :: Command
+helpCmd = def {cmdName = "help", cmdShortDesc = "Display help for a specific cmdcommand"}
 
 help :: Application -> [String] -> IO ()
-help cmd args = mapM_ putStr $ longHelp cmd args
+help app args = mapM_ putStr $ longHelp app args
 
 longHelp :: Application -> [String] -> [String]
--- | "cmd help" with no arguments: Give a list of all subcommands
-longHelp cmd [] =
-    [appShortDesc cmd ++ "\n"] ++
-    ["Usage: " ++ (appName cmd) ++ " [--version] [--help] command [args]\n\n"] ++
-    [indent 2 (appLongDesc cmd), "\n"] ++
-    map (categoryHelp cmd) (appCategories cmd) ++
-    [internalHelp cmd] ++
-    ["\nPlease report bugs to <" ++ appBugEmail cmd ++ ">\n"]
+-- | "app help" with no arguments: Give a list of all cmdcommands
+longHelp app [] =
+    [appShortDesc app ++ "\n"] ++
+    ["Usage: " ++ (appName app) ++ " [--version] [--help] command [args]\n\n"] ++
+    [indent 2 (appLongDesc app), "\n"] ++
+    map (categoryHelp app) (appCategories app) ++
+    [internalHelp app] ++
+    ["\nPlease report bugs to <" ++ appBugEmail app ++ ">\n"]
 
--- | "cmd help command": Give command-specific help
-longHelp cmd (command:_) = contextHelp cmd command m
-  where m = filter (\x -> subName x == command) (appSubs cmd)
+-- | "app help command": Give command-specific help
+longHelp app (command:_) = contextHelp app command m
+  where m = filter (\x -> cmdName x == command) (appCmds app)
 
 -- | Provide synopses for a specific category of commands
 categoryHelp :: Application -> String -> String
-categoryHelp cmd c = c ++ ":\n" ++ unlines (map itemHelp items) ++ "\n"
+categoryHelp app c = c ++ ":\n" ++ unlines (map itemHelp items) ++ "\n"
      where
-        items = filter (\x -> subCategory x == c) (appSubs cmd)
+        items = filter (\x -> cmdCategory x == c) (appCmds app)
 
 -- | Provide synopses for internal commands
 internalHelp :: Application -> String
-internalHelp cmd = unlines $ "Miscellaneous:" : map itemHelp internalSubs
+internalHelp app = unlines $ "Miscellaneous:" : map itemHelp internalCmds
 
 -- | One-line format for a command
-itemHelp i = printf "  %-14s%s" (subName i) (subShortDesc i)
+itemHelp i = printf "  %-14s%s" (cmdName i) (cmdShortDesc i)
 
 -- | Provide detailed help for a specific command
-contextHelp :: Application -> [Char] -> [SubCommand] -> [String]
-contextHelp cmd command [] = longHelp cmd [] ++ contextError
+contextHelp :: Application -> [Char] -> [Command] -> [String]
+contextHelp app command [] = longHelp app [] ++ contextError
   where contextError = ["\n*** \"" ++ command ++ "\": Unknown command.\n"]
-contextHelp cmd command (item:_) = synopsis ++ usage ++ description ++ examples
-  where usage = ["Usage: " ++ appName cmd ++ " " ++ command ++ hasOpts command ++ "\n"]
+contextHelp app command (item:_) = synopsis ++ usage ++ description ++ examples
+  where usage = ["Usage: " ++ appName app ++ " " ++ command ++ hasOpts command ++ "\n"]
         hasOpts "help" = " command"
         hasOpts _ = " [options]"
-        synopsis = [(appName cmd) ++ " " ++ command ++ ": " ++ subSynopsis item ++ "\n"]
-        description = case (subShortDesc item) of
+        synopsis = [(appName app) ++ " " ++ command ++ ": " ++ cmdSynopsis item ++ "\n"]
+        description = case (cmdShortDesc item) of
                     "" -> []
-                    _  -> ["\n" ++ indent 2 (subShortDesc item)]
-        examples = case (subExamples item) of
+                    _  -> ["\n" ++ indent 2 (cmdShortDesc item)]
+        examples = case (cmdExamples item) of
                      [] -> []
                      _  -> ["\nExamples:"] ++
-                           flip map (subExamples item) (\(desc,opts) ->
-                             "\n  " ++ desc ++ ":\n    " ++ (appName cmd) ++ " " ++ command ++
+                           flip map (cmdExamples item) (\(desc,opts) ->
+                             "\n  " ++ desc ++ ":\n    " ++ (appName app) ++ " " ++ command ++
                              " " ++ opts ++ "\n")
 
 ------------------------------------------------------------
 -- man
 --
 
-manSub :: SubCommand
-manSub = def {subName = "man", subShortDesc = "Generate Unix man page for specific subcommand"}
+manCmd :: Command
+manCmd = def {cmdName = "man", cmdShortDesc = "Generate Unix man page for specific cmdcommand"}
 
 man :: Application -> [String] -> IO ()
-man cmd args = do
+man app args = do
         currentTime <- getCurrentTime
 	let dateStamp = formatTime defaultTimeLocale "%B %Y" currentTime
-	putStrLn . concat $ longMan cmd dateStamp args
+	putStrLn . concat $ longMan app dateStamp args
 
 manSH :: String -> String
 manSH s = "\n.SH " ++ s ++ "\n\n"
 
 headerMan :: Application -> String -> [String]
-headerMan cmd dateStamp = [unwords [".TH", u, "1", quote dateStamp, quote (appName cmd), project, "\n"]]
+headerMan app dateStamp = [unwords [".TH", u, "1", quote dateStamp, quote (appName app), project, "\n"]]
     where
-        u = map toUpper (appName cmd)
-	project | appProject cmd == def = ""
-	        | otherwise = quote $ appProject cmd
+        u = map toUpper (appName app)
+	project | appProject app == def = ""
+	        | otherwise = quote $ appProject app
 
-synopsisMan :: Application -> String -> [SubCommand] -> [String]
-synopsisMan cmd _ [] =
-    [manSH "SYNOPSIS", ".B ", appName cmd, "\n.RI SUBCOMMAND\n[\n.I OPTIONS\n]\n.I filename ...\n\n"]
-synopsisMan cmd command (item:_) =
-    [manSH "SYNOPSIS", ".B ", appName cmd, "\n.RI ", command, "\n", hasOpts command, "\n"]
-  where hasOpts "help" = ".I <subcommand>\n"
-        hasOpts "man" = ".I <subcommand>\n"
+synopsisMan :: Application -> String -> [Command] -> [String]
+synopsisMan app _ [] =
+    [manSH "SYNOPSIS", ".B ", appName app, "\n.RI COMMAND\n[\n.I OPTIONS\n]\n.I filename ...\n\n"]
+synopsisMan app command (item:_) =
+    [manSH "SYNOPSIS", ".B ", appName app, "\n.RI ", command, "\n", hasOpts command, "\n"]
+  where hasOpts "help" = ".I <cmdcommand>\n"
+        hasOpts "man" = ".I <cmdcommand>\n"
         hasOpts _ = "[\n.I OPTIONS\n]\n"
 
 authorsMan :: Application -> String -> [String]
-authorsMan cmd command = manSH "AUTHORS" : a ++ g ++ e
+authorsMan app command = manSH "AUTHORS" : a ++ g ++ e
   where
-    n = appName cmd
-    a | appAuthors cmd == [] = []
-      | otherwise = [n ++ " was written by ", englishList $ appAuthors cmd, "\n\n"]
+    n = appName app
+    a | appAuthors app == [] = []
+      | otherwise = [n ++ " was written by ", englishList $ appAuthors app, "\n\n"]
     g = ["This manual page was autogenerated by\n.B " ++ n ++ " man" ++ space command ++ ".\n\n"]
-    e | appBugEmail cmd == "" = []
-      | otherwise = ["Please report bugs to <" ++ appBugEmail cmd ++ ">\n"]
+    e | appBugEmail app == "" = []
+      | otherwise = ["Please report bugs to <" ++ appBugEmail app ++ ">\n"]
     space "" = ""
     space c = ' ':c
 
@@ -125,48 +125,48 @@ descMan :: String -> [String]
 descMan desc = [manSH "DESCRIPTION", desc, "\n"]
 
 longMan :: Application -> String -> [String] -> [String]
-longMan cmd dateStamp [] =
-        headerMan cmd dateStamp ++
+longMan app dateStamp [] =
+        headerMan app dateStamp ++
 	[manSH "NAME"] ++
-        [appName cmd, " \\- ", appShortDesc cmd, "\n\n"] ++
-        synopsisMan cmd "SUBCOMMAND" [] ++
-        descMan (".B " ++ appName cmd ++ "\n" ++ appLongDesc cmd) ++
-        map (categoryMan cmd) (appCategories cmd) ++
-	authorsMan cmd "" ++
-        seeAlsoMan cmd
+        [appName app, " \\- ", appShortDesc app, "\n\n"] ++
+        synopsisMan app "COMMAND" [] ++
+        descMan (".B " ++ appName app ++ "\n" ++ appLongDesc app) ++
+        map (categoryMan app) (appCategories app) ++
+	authorsMan app "" ++
+        seeAlsoMan app
 
-longMan cmd dateStamp (command:_) = contextMan cmd dateStamp command m
+longMan app dateStamp (command:_) = contextMan app dateStamp command m
     where
-        m = filter (\x -> subName x == command) (appSubs cmd)
+        m = filter (\x -> cmdName x == command) (appCmds app)
 
 -- | Provide a list of related commands
 seeAlsoMan :: Application -> [String]
-seeAlsoMan cmd
-        | appSeeAlso cmd == def = []
+seeAlsoMan app
+        | appSeeAlso app == def = []
         | otherwise = [manSH "SEE ALSO" ++ ".PP\n"] ++
-                      map (\x -> "\\fB"++x++"\\fR(1)\n") (appSeeAlso cmd)
+                      map (\x -> "\\fB"++x++"\\fR(1)\n") (appSeeAlso app)
 
 -- | Provide synopses for a specific category of commands
 categoryMan :: Application -> String -> String
-categoryMan cmd c = manSH (map toUpper c) ++ concat (map itemMan items) ++ "\n"
-  where items = filter (\x -> subCategory x == c) (appSubs cmd)
-        itemMan i = printf ".IP %s\n%s\n" (subName i) (subShortDesc i)
+categoryMan app c = manSH (map toUpper c) ++ concat (map itemMan items) ++ "\n"
+  where items = filter (\x -> cmdCategory x == c) (appCmds app)
+        itemMan i = printf ".IP %s\n%s\n" (cmdName i) (cmdShortDesc i)
 
-contextMan :: Application -> String -> [Char] -> [SubCommand] -> [String]
-contextMan cmd dateStamp _ [] = longMan cmd dateStamp []
-contextMan cmd dateStamp command i@(item:_) =
-        headerMan cmd dateStamp ++
-        synopsisMan cmd command i ++
-        descMan (subSynopsis item) ++
+contextMan :: Application -> String -> [Char] -> [Command] -> [String]
+contextMan app dateStamp _ [] = longMan app dateStamp []
+contextMan app dateStamp command i@(item:_) =
+        headerMan app dateStamp ++
+        synopsisMan app command i ++
+        descMan (cmdSynopsis item) ++
         description ++
         examples ++
-	authorsMan cmd command
+	authorsMan app command
     where
-        description | subShortDesc item == "" = []
-                    | otherwise = ["\n" ++ subShortDesc item]
-        examples | subExamples item == [] = []
+        description | cmdShortDesc item == "" = []
+                    | otherwise = ["\n" ++ cmdShortDesc item]
+        examples | cmdExamples item == [] = []
                  | otherwise = manSH "EXAMPLES" :
-                               flip map (subExamples item) (\(desc, opts) ->
+                               flip map (cmdExamples item) (\(desc, opts) ->
                                  ".PP\n" ++ desc ++ ":\n.PP\n.RS\n\\f(CW" ++
-                                 appName cmd ++ " " ++ command ++ " " ++
+                                 appName app ++ " " ++ command ++ " " ++
                                  opts ++ "\\fP\n.RE\n")

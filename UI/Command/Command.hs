@@ -1,49 +1,49 @@
 module UI.Command.Command (
-	SubCommand (..),
+	Command (..),
 ) where
 
 import Data.Default
 
 ------------------------------------------------------------
--- SubCommand class
+-- Command class
 --
 
--- | It is often simpler to use the default implementation of SubCommand, and
+-- | It is often simpler to use the default implementation of Command, and
 -- override it with the details you choose to use.
 -- For example, an implementation of the ''hello world'' command:
 --
 -- > world = def {
--- >         subName = "world",
--- >         subHandler = worldHandler,
--- >         subCategory = "Greetings",
--- >         subShortDesc = "An implementation of the standard software greeting."
+-- >         cmdName = "world",
+-- >         cmdHandler = worldHandler,
+-- >         cmdCategory = "Greetings",
+-- >         cmdShortDesc = "An implementation of the standard software greeting."
 -- > }
 -- >
 -- > worldHandler :: [String] -> IO ()
 -- > worldHandler _ = putStrLn "Hello world!"
 --
-data SubCommand  = SubCommand {
-    -- | Name of the subcommand
-    subName :: String,
+data Command  = Command {
+    -- | Name of the cmdcommand
+    cmdName :: String,
 
     -- | Handler
-    subHandler :: [String] -> IO (),
+    cmdHandler :: [String] -> IO (),
 
     -- | Category in this program's documentation
-    subCategory :: String,
+    cmdCategory :: String,
 
     -- | Synopsis
-    subSynopsis :: String,
+    cmdSynopsis :: String,
 
     -- | Short description
-    subShortDesc :: String,
+    cmdShortDesc :: String,
 
     -- | [(example description, args)]
-    subExamples :: [(String, String)]
+    cmdExamples :: [(String, String)]
 }
 
-instance Default SubCommand where
-    def = SubCommand "<undocumented subcommand>"
+instance Default Command where
+    def = Command "<undocumented cmdcommand>"
                      (\_ -> putStrLn "Unimplemented command")
 		     def def def def
 

@@ -33,5 +33,5 @@ There are many good reasons for developing a commandline version of your program
 * Automation: Commandline tools can be easily used in scripts. You may not think it is useful
 to automate your software, but your power users might!
 
-If you have developed a library, subcommand provides a useful framework for demonstrating the
+If you have developed a library, UI.Command provides a useful framework for demonstrating the
 library features.

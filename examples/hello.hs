@@ -10,10 +10,10 @@ import UI.Command
 --
 
 world = def {
-       	        subName = "world",
-                subHandler = worldHandler,
-                subCategory = "Greetings",
-                subShortDesc = "An implementation of the standard software greeting."
+       	        cmdName = "world",
+                cmdHandler = worldHandler,
+                cmdCategory = "Greetings",
+                cmdShortDesc = "An implementation of the standard software greeting."
         }
 
 worldHandler :: [String] -> IO ()
@@ -24,11 +24,11 @@ worldHandler _ = putStrLn "Hello world!"
 --
 
 times = def {
-       	        subName = "times",
-                subHandler = timesHandler,
-                subCategory = "Cat Math",
-                subShortDesc = "A repetition of salutation",
-                subExamples = [("Say hello 7 times", "7"), ("Say hello 3 times", "3")]
+       	        cmdName = "times",
+                cmdHandler = timesHandler,
+                cmdCategory = "Cat Math",
+                cmdShortDesc = "A repetition of salutation",
+                cmdExamples = [("Say hello 7 times", "7"), ("Say hello 3 times", "3")]
         }
 
 timesHandler :: [String] -> IO ()
@@ -49,7 +49,7 @@ hello = def {
 	        appCategories = ["Greetings", "Cat Math"],
 		appSeeAlso = ["tractorgen"],
 		appProject = "Haskell",
-	        appSubs = [world, times]
+	        appCmds = [world, times]
 	}
 
 longDesc = "a demonstration program for the UI.Command framework."
@@ -58,4 +58,4 @@ longDesc = "a demonstration program for the UI.Command framework."
 -- Main
 --
 
-main = subMain hello
+main = appMain hello

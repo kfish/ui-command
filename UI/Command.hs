@@ -1,7 +1,7 @@
 module UI.Command (
         Application (..),
-	SubCommand (..),
-	subMain
+	Command (..),
+	appMain
 ) where
 
 import UI.Command.Application
