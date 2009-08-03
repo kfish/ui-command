@@ -26,7 +26,8 @@ Cabal-Version:       >= 1.2
 library
     Build-Depends:   base, time, old-locale, data-default
     Exposed-modules: UI.Command
-    Other-modules:   UI.Command.Command
+    Other-modules:   UI.Command.Application
+                     UI.Command.Command
                      UI.Command.Doc
                      UI.Command.Main
                      UI.Command.Render

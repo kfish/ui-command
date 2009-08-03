@@ -4,5 +4,6 @@ module UI.Command (
 	subMain
 ) where
 
+import UI.Command.Application
 import UI.Command.Command
 import UI.Command.Main

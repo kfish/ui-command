@@ -11,6 +11,7 @@ import Data.Time.Clock (getCurrentTime)
 
 import Text.Printf (printf)
 
+import UI.Command.Application
 import UI.Command.Command
 import UI.Command.Render
 

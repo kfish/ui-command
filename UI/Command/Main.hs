@@ -7,6 +7,7 @@ import Control.Monad (when)
 import System.Environment (getArgs)
 import System.Exit
 
+import UI.Command.Application
 import UI.Command.Command
 import UI.Command.Doc
 
