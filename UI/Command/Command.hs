@@ -11,7 +11,7 @@ import Data.Default
 
 -- | It is often simpler to use the default implementation of Application, and
 -- override it with the details you choose to use.
--- For example, an implementation of the "hello" command:
+-- For example, an implementation of the ''hello'' command:
 --
 -- > hello = def {
 -- >         appName = "hello",
@@ -69,7 +69,7 @@ instance Default Application where
 
 -- | It is often simpler to use the default implementation of SubCommand, and
 -- override it with the details you choose to use.
--- For example, an implementation of the "hello world" command:
+-- For example, an implementation of the ''hello world'' command:
 --
 -- > world = def {
 -- >         subName = "world",

@@ -14,6 +14,17 @@ import UI.Command.Doc
 -- subMain
 --
 
+-- | Main wrapper
+--
+-- > main = subMain hello
+--
+subMain :: Application -> IO ()
+subMain cmd = do
+        allArgs <- getArgs
+	when (any isHelp allArgs) $ showHelp cmd allArgs
+	when (any isVersion allArgs) $ showVersion cmd
+	handleSubCommand cmd allArgs
+
 helpStrings :: [[Char]]
 helpStrings = ["--help", "-h", "-?"]
 
@@ -25,13 +36,6 @@ isHelp x = elem x helpStrings
 
 isVersion :: String -> Bool
 isVersion x = elem x versionStrings
-
-subMain :: Application -> IO ()
-subMain cmd = do
-        allArgs <- getArgs
-	when (any isHelp allArgs) $ showHelp cmd allArgs
-	when (any isVersion allArgs) $ showVersion cmd
-	handleSubCommand cmd allArgs
 
 showHelp :: Application -> [String] -> IO ()
 showHelp cmd args = do
