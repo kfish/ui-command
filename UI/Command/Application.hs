@@ -4,6 +4,8 @@ module UI.Command.Application (
 
 import Data.Default
 
+import System.Console.GetOpt (OptDescr)
+
 import UI.Command.Command
 
 ------------------------------------------------------------
@@ -29,7 +31,7 @@ import UI.Command.Command
 -- > 
 -- > longDesc = "a demonstration program for the UI.Command framework."
 --
-data Application = Application {
+data (Default opts) => Application opts = Application {
     -- | Name of the program
     appName :: String,
 
@@ -58,9 +60,14 @@ data Application = Application {
     appSeeAlso :: [String],
 
     -- | The actual commands
-    appCmds :: [Command]
+    appCmds :: [Command],
+
+    -- | Union of all options accepted by the application's commands.
+    -- Note that options '-h', '-?', '--help', '-V', '--version' will
+    -- be automatically added and handled by UI.Command
+    appOptions :: [OptDescr opts]
 }
 
-instance Default Application where
-    def = Application "<undocumented command>" "0.0" def def def def def def def def
+instance (Default opts) => Default (Application opts) where
+    def = Application "<undocumented command>" "0.0" def def def def def def def def def
 

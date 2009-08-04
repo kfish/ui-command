@@ -28,10 +28,10 @@ internalCmds = [helpCmd, manCmd]
 helpCmd :: Command
 helpCmd = def {cmdName = "help", cmdShortDesc = "Display help for a specific cmdcommand"}
 
-help :: Application -> [String] -> IO ()
+help :: (Default opts) => Application opts -> [String] -> IO ()
 help app args = mapM_ putStr $ longHelp app args
 
-longHelp :: Application -> [String] -> [String]
+longHelp :: (Default opts) => Application opts -> [String] -> [String]
 -- | "app help" with no arguments: Give a list of all cmdcommands
 longHelp app [] =
     [appShortDesc app ++ "\n"] ++
@@ -46,20 +46,20 @@ longHelp app (command:_) = contextHelp app command m
   where m = filter (\x -> cmdName x == command) (appCmds app)
 
 -- | Provide synopses for a specific category of commands
-categoryHelp :: Application -> String -> String
+categoryHelp :: (Default opts) => Application opts -> String -> String
 categoryHelp app c = c ++ ":\n" ++ unlines (map itemHelp items) ++ "\n"
      where
         items = filter (\x -> cmdCategory x == c) (appCmds app)
 
 -- | Provide synopses for internal commands
-internalHelp :: Application -> String
+internalHelp :: (Default opts) => Application opts -> String
 internalHelp app = unlines $ "Miscellaneous:" : map itemHelp internalCmds
 
 -- | One-line format for a command
 itemHelp i = printf "  %-14s%s" (cmdName i) (cmdShortDesc i)
 
 -- | Provide detailed help for a specific command
-contextHelp :: Application -> [Char] -> [Command] -> [String]
+contextHelp :: (Default opts) => Application opts -> [Char] -> [Command] -> [String]
 contextHelp app command [] = longHelp app [] ++ contextError
   where contextError = ["\n*** \"" ++ command ++ "\": Unknown command.\n"]
 contextHelp app command (item:_) = synopsis ++ usage ++ description ++ examples
@@ -84,7 +84,7 @@ contextHelp app command (item:_) = synopsis ++ usage ++ description ++ examples
 manCmd :: Command
 manCmd = def {cmdName = "man", cmdShortDesc = "Generate Unix man page for specific cmdcommand"}
 
-man :: Application -> [String] -> IO ()
+man :: (Default opts) => Application opts -> [String] -> IO ()
 man app args = do
         currentTime <- getCurrentTime
 	let dateStamp = formatTime defaultTimeLocale "%B %Y" currentTime
@@ -93,14 +93,14 @@ man app args = do
 manSH :: String -> String
 manSH s = "\n.SH " ++ s ++ "\n\n"
 
-headerMan :: Application -> String -> [String]
+headerMan :: (Default opts) => Application opts -> String -> [String]
 headerMan app dateStamp = [unwords [".TH", u, "1", quote dateStamp, quote (appName app), project, "\n"]]
     where
         u = map toUpper (appName app)
 	project | appProject app == def = ""
 	        | otherwise = quote $ appProject app
 
-synopsisMan :: Application -> String -> [Command] -> [String]
+synopsisMan :: (Default opts) => Application opts -> String -> [Command] -> [String]
 synopsisMan app _ [] =
     [manSH "SYNOPSIS", ".B ", appName app, "\n.RI COMMAND\n[\n.I OPTIONS\n]\n.I filename ...\n\n"]
 synopsisMan app command (item:_) =
@@ -109,7 +109,7 @@ synopsisMan app command (item:_) =
         hasOpts "man" = ".I <cmdcommand>\n"
         hasOpts _ = "[\n.I OPTIONS\n]\n"
 
-authorsMan :: Application -> String -> [String]
+authorsMan :: (Default opts) => Application opts -> String -> [String]
 authorsMan app command = manSH "AUTHORS" : a ++ g ++ e
   where
     n = appName app
@@ -124,7 +124,7 @@ authorsMan app command = manSH "AUTHORS" : a ++ g ++ e
 descMan :: String -> [String]
 descMan desc = [manSH "DESCRIPTION", desc, "\n"]
 
-longMan :: Application -> String -> [String] -> [String]
+longMan :: (Default opts) => Application opts -> String -> [String] -> [String]
 longMan app dateStamp [] =
         headerMan app dateStamp ++
 	[manSH "NAME"] ++
@@ -140,19 +140,19 @@ longMan app dateStamp (command:_) = contextMan app dateStamp command m
         m = filter (\x -> cmdName x == command) (appCmds app)
 
 -- | Provide a list of related commands
-seeAlsoMan :: Application -> [String]
+seeAlsoMan :: (Default opts) => Application opts -> [String]
 seeAlsoMan app
         | appSeeAlso app == def = []
         | otherwise = [manSH "SEE ALSO" ++ ".PP\n"] ++
                       map (\x -> "\\fB"++x++"\\fR(1)\n") (appSeeAlso app)
 
 -- | Provide synopses for a specific category of commands
-categoryMan :: Application -> String -> String
+categoryMan :: (Default opts) => Application opts -> String -> String
 categoryMan app c = manSH (map toUpper c) ++ concat (map itemMan items) ++ "\n"
   where items = filter (\x -> cmdCategory x == c) (appCmds app)
         itemMan i = printf ".IP %s\n%s\n" (cmdName i) (cmdShortDesc i)
 
-contextMan :: Application -> String -> [Char] -> [Command] -> [String]
+contextMan :: (Default opts) => Application opts -> String -> [Char] -> [Command] -> [String]
 contextMan app dateStamp _ [] = longMan app dateStamp []
 contextMan app dateStamp command i@(item:_) =
         headerMan app dateStamp ++

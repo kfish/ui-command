@@ -2,6 +2,8 @@ module UI.Command.Main (
 	appMain
 ) where
 
+import Data.Default
+
 import Control.Monad (when)
 
 import System.Environment (getArgs)
@@ -19,7 +21,7 @@ import UI.Command.Doc
 --
 -- > main = appMain hello
 --
-appMain :: Application -> IO ()
+appMain :: Application () -> IO ()
 appMain app = do
         allArgs <- getArgs
 	when (any isHelp allArgs) $ showHelp app allArgs
@@ -38,17 +40,17 @@ isHelp x = elem x helpStrings
 isVersion :: String -> Bool
 isVersion x = elem x versionStrings
 
-showHelp :: Application -> [String] -> IO ()
+showHelp :: (Default opts) => Application opts -> [String] -> IO ()
 showHelp app args = do
         help app args
 	exitWith ExitSuccess
 
-showVersion :: Application -> IO ()
+showVersion :: (Default opts) => Application opts -> IO ()
 showVersion app = do
         putStrLn $ appName app ++ " " ++ appVersion app
         exitWith ExitSuccess
 
-handleCommand :: Application -> [String] -> IO ()
+handleCommand :: (Default opts) => Application opts -> [String] -> IO ()
 handleCommand app [] = showHelp app []
 -- handleCommand app [_] = showHelp app [""]
 
