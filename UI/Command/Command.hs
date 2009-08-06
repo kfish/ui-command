@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleInstances, TypeSynonymInstances #-}
 module UI.Command.Command (
 	Command (..),
         defCmd
@@ -5,10 +6,9 @@ module UI.Command.Command (
 
 import Data.Default
 
-import Control.Monad.Reader (ReaderT)
 import Control.Monad.Trans (liftIO)
 
-import UI.Command.App (AppContext(..))
+import UI.Command.App (App)
 
 ------------------------------------------------------------
 -- Command class
@@ -32,8 +32,7 @@ data (Default config) => Command config = Command {
     cmdName :: String,
 
     -- | Handler
-    -- cmdHandler :: App config (),
-    cmdHandler :: ReaderT (AppContext config) IO (),
+    cmdHandler :: App config (),
 
     -- | Category in this program's documentation
     cmdCategory :: String,
@@ -48,12 +47,11 @@ data (Default config) => Command config = Command {
     cmdExamples :: [(String, String)]
 }
 
+instance (Default config) => Default (App config ()) where
+    def = liftIO $ putStrLn "Unimplemented command"
+
 instance (Default config) => Default (Command config) where
-    def = Command "<Anonymous command>"
-                     (liftIO $ putStrLn "Unimplemented command")
-		     def def def def
+    def = Command "<Anonymous command>" def def def def def
 
 defCmd :: Command ()
-defCmd = Command "<Anonymous command>"
-                 (liftIO $ putStrLn "Unimplmented command")
-                 "" "" "" []
+defCmd = Command "<Anonymous command>" def def def def def
