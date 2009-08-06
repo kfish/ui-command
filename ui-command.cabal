@@ -24,9 +24,10 @@ Cabal-Version:       >= 1.2
 
 ------------------------------------------------------------
 library
-    Build-Depends:   base, time, old-locale, data-default
+    Build-Depends:   base, mtl, time, old-locale, data-default
     Exposed-modules: UI.Command
-    Other-modules:   UI.Command.Application
+    Other-modules:   UI.Command.App
+                     UI.Command.Application
                      UI.Command.Command
                      UI.Command.Doc
                      UI.Command.Main

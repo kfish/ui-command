@@ -1,6 +1,9 @@
 module Main where
 
-import Data.Default (def)
+import Control.Monad (liftM)
+import Control.Monad.Trans (liftIO)
+
+import Data.Default
 import Data.List (intersperse)
 
 import UI.Command
@@ -9,21 +12,22 @@ import UI.Command
 -- world
 --
 
-world = def {
+world :: Command ()
+
+world = defCmd {
        	        cmdName = "world",
                 cmdHandler = worldHandler,
                 cmdCategory = "Greetings",
                 cmdShortDesc = "An implementation of the standard software greeting."
         }
 
-worldHandler :: [String] -> IO ()
-worldHandler _ = putStrLn "Hello world!"
+worldHandler = liftIO $ putStrLn "Hello world!"
 
 ------------------------------------------------------------
 -- times
 --
 
-times = def {
+times = defCmd {
        	        cmdName = "times",
                 cmdHandler = timesHandler,
                 cmdCategory = "Cat Math",
@@ -31,14 +35,18 @@ times = def {
                 cmdExamples = [("Say hello 7 times", "7"), ("Say hello 3 times", "3")]
         }
 
-timesHandler :: [String] -> IO ()
-timesHandler [] = return ()
-timesHandler (n:_) = putStrLn $ concat . intersperse " " $ take (read n) (repeat "hello")
+timesHandler = do
+        args <- appArgs
+        t args
+        where
+                t [] = return ()
+                t (n:_) = liftIO $ putStrLn $ concat . intersperse " " $ take (read n) (repeat "hello")
 
 ------------------------------------------------------------
--- The command
+-- The Application
 --
 
+hello :: Application () ()
 hello = def {
 	        appName = "hello",
                 appVersion = "0.1",
@@ -58,4 +66,5 @@ longDesc = "a demonstration program for the UI.Command framework."
 -- Main
 --
 
+main :: IO ()
 main = appMain hello

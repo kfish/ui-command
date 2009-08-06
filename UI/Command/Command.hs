@@ -1,8 +1,14 @@
 module UI.Command.Command (
 	Command (..),
+        defCmd
 ) where
 
 import Data.Default
+
+import Control.Monad.Reader (ReaderT)
+import Control.Monad.Trans (liftIO)
+
+import UI.Command.App (AppContext(..))
 
 ------------------------------------------------------------
 -- Command class
@@ -19,15 +25,15 @@ import Data.Default
 -- >         cmdShortDesc = "An implementation of the standard software greeting."
 -- > }
 -- >
--- > worldHandler :: [String] -> IO ()
--- > worldHandler _ = putStrLn "Hello world!"
+-- > worldHandler = liftIO $ putStrLn "Hello world!"
 --
-data Command  = Command {
+data (Default config) => Command config = Command {
     -- | Name of the cmdcommand
     cmdName :: String,
 
     -- | Handler
-    cmdHandler :: [String] -> IO (),
+    -- cmdHandler :: App config (),
+    cmdHandler :: ReaderT (AppContext config) IO (),
 
     -- | Category in this program's documentation
     cmdCategory :: String,
@@ -42,8 +48,12 @@ data Command  = Command {
     cmdExamples :: [(String, String)]
 }
 
-instance Default Command where
-    def = Command "<undocumented cmdcommand>"
-                     (\_ -> putStrLn "Unimplemented command")
+instance (Default config) => Default (Command config) where
+    def = Command "<Anonymous command>"
+                     (liftIO $ putStrLn "Unimplemented command")
 		     def def def def
 
+defCmd :: Command ()
+defCmd = Command "<Anonymous command>"
+                 (liftIO $ putStrLn "Unimplmented command")
+                 "" "" "" []

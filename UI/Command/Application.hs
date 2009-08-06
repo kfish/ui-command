@@ -31,7 +31,7 @@ import UI.Command.Command
 -- > 
 -- > longDesc = "a demonstration program for the UI.Command framework."
 --
-data (Default opts) => Application opts = Application {
+data (Default opts, Default config) => Application opts config = Application {
     -- | Name of the program
     appName :: String,
 
@@ -60,14 +60,17 @@ data (Default opts) => Application opts = Application {
     appSeeAlso :: [String],
 
     -- | The actual commands
-    appCmds :: [Command],
+    appCmds :: [Command config],
 
     -- | Union of all options accepted by the application's commands.
     -- Note that options '-h', '-?', '--help', '-V', '--version' will
     -- be automatically added and handled by UI.Command
-    appOptions :: [OptDescr opts]
+    appOptions :: [OptDescr opts],
+
+    -- | Function to process options
+    appProcessConfig :: config -> [opts] -> IO config
 }
 
-instance (Default opts) => Default (Application opts) where
-    def = Application "<undocumented command>" "0.0" def def def def def def def def def
+instance (Default opts, Default config) => Default (Application opts config) where
+    def = Application "<undocumented command>" "0.0" def def def def def def def def def def
 
