@@ -1,6 +1,6 @@
 module Main where
 
-import Control.Monad (liftM)
+import Control.Monad (liftM, when)
 import Control.Monad.Trans (liftIO)
 
 import Data.Default
@@ -37,10 +37,8 @@ times = defCmd {
 
 timesHandler = do
         args <- appArgs
-        t args
-        where
-                t [] = return ()
-                t (n:_) = liftIO $ putStrLn $ concat . intersperse " " $ take (read n) (repeat "hello")
+        when (args == []) $ return ()
+        liftIO $ putStrLn $ concat . intersperse " " $ take (read $ head args) (repeat "hello")
 
 ------------------------------------------------------------
 -- The Application
