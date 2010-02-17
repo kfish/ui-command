@@ -1,2 +1,6 @@
 
 * make an option to generate a bash completion script (or at least the main part of a bash script, with links to documentation about how to customize it)
+
+* adapt help output to terminal size:
+
+http://hackage.haskell.org/packages/archive/vty/latest/doc/html/Graphics-Vty-Terminal.html#t%3ATerminal
