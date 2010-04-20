@@ -1,7 +1,9 @@
 Name:                ui-command
-Version:             0.1.0
+Version:             0.5.0
 License:             BSD3
+License-file:        LICENSE
 Author:              Conrad Parker <conrad@metadecks.org>
+Maintainer:          Conrad Parker <conrad@metadecks.org>
 Category:            Development
 Synopsis:            A framework for friendly commandline programs
 Description:         This is a framework for creating commandline applications. It
