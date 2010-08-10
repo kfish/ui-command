@@ -26,7 +26,7 @@ Cabal-Version:       >= 1.2
 
 ------------------------------------------------------------
 library
-    Build-Depends:   base, transformers, monads-fd, time, old-locale, data-default
+    Build-Depends:   base, mtl, time, old-locale, data-default
     Exposed-modules: UI.Command
     Other-modules:   UI.Command.App
                      UI.Command.Application
