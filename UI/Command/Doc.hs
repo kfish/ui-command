@@ -1,6 +1,6 @@
 module UI.Command.Doc (
 	helpCmd, manCmd,
-        help, man
+        helpErr, help, man
 )where
 
 import Data.Default
@@ -9,6 +9,7 @@ import Data.Char (toUpper)
 import System.Locale (defaultTimeLocale)
 import Data.Time.Format (formatTime)
 import Data.Time.Clock (getCurrentTime)
+import System.IO (hPutStr, stderr)
 
 import Text.Printf (printf)
 
@@ -35,6 +36,10 @@ helpCmd = def {
         cmdName = "help",
         cmdShortDesc = "Display help for a specific cmdcommand"
 }
+
+helpErr app = do
+        args <- appArgs
+	liftIO $ mapM_ (hPutStr stderr) $ longHelp app args
 
 --help :: (Default opts, Default config) => Application opts config -> [String] -> IO ()
 -- help :: (Default opts, Default config) => Application opts config -> App config ()

@@ -22,12 +22,16 @@ import UI.Command.Doc
 --
 --
 
-initApp :: (Default opts, Default config) => Application opts config -> [String] -> IO (AppContext config)
+initApp :: (Default opts, Default config)
+        => Application opts config -> [String]
+        -> IO (AppContext config)
 initApp app args = do
         (config, args) <- processArgs app args
 	return $ AppContext config args
 
-processArgs :: (Default opts, Default config) => Application opts config -> [String] -> IO (config, [String])
+processArgs :: (Default opts, Default config)
+            => Application opts config -> [String]
+            -> IO (config, [String])
 processArgs app args = do
   case getOpt RequireOrder (appOptions app) args of
     (opts, args'  , []  ) -> do
@@ -86,13 +90,13 @@ handleCommand app [] = showHelp app []
 handleCommand app (command:args)
         | command == "help" = showHelp app args
         | command == "man" = showMan
-        | otherwise = (initApp app args) >>= loop1
+        | otherwise = initApp app args >>= loop1
         where
-                showMan = (initApp app args) >>= loopMan
+                showMan = initApp app args >>= loopMan
 	        loopMan st = runReaderT (man app) st
 	        loop1 st = runReaderT run st
                 -- docCmds :: (Default config1) => [Command config1]
                 -- docCmds = [helpCmd{cmdHandler = help app}, manCmd{cmdHandler = man app}]
                 run = act $ filter (\x -> cmdName x == command) (appCmds app)
-	        act [] = help app
+	        act [] = helpErr app
 		act (s:_) = cmdHandler s
