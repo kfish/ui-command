@@ -1,5 +1,5 @@
 Name:                ui-command
-Version:             0.5.3
+Version:             0.5.4
 License:             BSD3
 License-file:        LICENSE
 Author:              Conrad Parker <conrad@metadecks.org>
@@ -26,7 +26,7 @@ Cabal-Version:       >= 1.2
 
 ------------------------------------------------------------
 library
-    Build-Depends:   base < 5, transformers, monads-fd, time, old-locale, data-default
+    Build-Depends:   base < 5, mtl >= 2.0.0.0 && < 3, time, old-locale, data-default
     Exposed-modules: UI.Command
     Other-modules:   UI.Command.App
                      UI.Command.Application
