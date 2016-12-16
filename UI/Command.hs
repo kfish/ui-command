@@ -3,9 +3,9 @@ module UI.Command (
         appArgs,
         appConfig,
         Application (..),
-	Command (..),
+        Command (..),
         defCmd,
-	appMain,
+        appMain,
         appMainWithOptions
 ) where
 

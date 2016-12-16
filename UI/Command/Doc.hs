@@ -1,12 +1,12 @@
 module UI.Command.Doc (
-	helpCmd, manCmd,
+        helpCmd, manCmd,
         helpErr, help, man
 )where
 
 import Data.Default
 import Data.Char (toUpper)
 
-import System.Locale (defaultTimeLocale)
+import Data.Time.Locale.Compat (defaultTimeLocale)
 import Data.Time.Format (formatTime)
 import Data.Time.Clock (getCurrentTime)
 import System.IO (hPutStr, stderr)
@@ -39,13 +39,13 @@ helpCmd = def {
 
 helpErr app = do
         args <- appArgs
-	liftIO $ mapM_ (hPutStr stderr) $ longHelp app args
+        liftIO $ mapM_ (hPutStr stderr) $ longHelp app args
 
 --help :: (Default opts, Default config) => Application opts config -> [String] -> IO ()
 -- help :: (Default opts, Default config) => Application opts config -> App config ()
 help app = do
         args <- appArgs
-	liftIO $ mapM_ putStr $ longHelp app args
+        liftIO $ mapM_ putStr $ longHelp app args
 
 longHelp :: (Default opts, Default config) => Application opts config -> [String] -> [String]
 -- | "app help" with no arguments: Give a list of all cmdcommands
@@ -105,10 +105,10 @@ manCmd = def {
 
 -- man :: (Default opts, Default config) => Application opts config -> [String] -> IO ()
 man app = do
-        args <- appArgs
-        currentTime <- liftIO $ getCurrentTime
-	let dateStamp = formatTime defaultTimeLocale "%B %Y" currentTime
-	liftIO $ putStrLn . concat $ longMan app dateStamp args
+       args <- appArgs
+       currentTime <- liftIO $ getCurrentTime
+       let dateStamp = formatTime defaultTimeLocale "%B %Y" currentTime
+       liftIO $ putStrLn . concat $ longMan app dateStamp args
 
 manSH :: String -> String
 manSH s = "\n.SH " ++ s ++ "\n\n"
@@ -116,9 +116,9 @@ manSH s = "\n.SH " ++ s ++ "\n\n"
 headerMan :: (Default opts, Default config) => Application opts config -> String -> [String]
 headerMan app dateStamp = [unwords [".TH", u, "1", quote dateStamp, quote (appName app), project, "\n"]]
     where
-        u = map toUpper (appName app)
-	project | appProject app == def = ""
-	        | otherwise = quote $ appProject app
+       u = map toUpper (appName app)
+       project | appProject app == def = ""
+               | otherwise = quote $ appProject app
 
 synopsisMan :: (Default opts, Default config) => Application opts config -> String -> [Command config] -> [String]
 synopsisMan app _ [] =
@@ -147,12 +147,12 @@ descMan desc = [manSH "DESCRIPTION", desc, "\n"]
 longMan :: (Default opts, Default config) => Application opts config -> String -> [String] -> [String]
 longMan app dateStamp [] =
         headerMan app dateStamp ++
-	[manSH "NAME"] ++
+       [manSH "NAME"] ++
         [appName app, " \\- ", appShortDesc app, "\n\n"] ++
         synopsisMan app "COMMAND" [] ++
         descMan (".B " ++ appName app ++ "\n" ++ appLongDesc app) ++
         map (categoryMan app) (appCategories app) ++
-	authorsMan app "" ++
+       authorsMan app "" ++
         seeAlsoMan app
 
 longMan app dateStamp (command:_) = contextMan app dateStamp command m
@@ -180,7 +180,7 @@ contextMan app dateStamp command i@(item:_) =
         descMan (cmdSynopsis item) ++
         description ++
         examples ++
-	authorsMan app command
+       authorsMan app command
     where
         description | cmdShortDesc item == "" = []
                     | otherwise = ["\n" ++ cmdShortDesc item]

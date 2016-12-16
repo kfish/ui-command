@@ -1,6 +1,6 @@
 {-# LANGUAGE FlexibleInstances, TypeSynonymInstances #-}
 module UI.Command.Command (
-	Command (..),
+        Command (..),
         defCmd
 ) where
 
