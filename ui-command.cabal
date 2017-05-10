@@ -26,14 +26,14 @@ Cabal-Version:       >= 1.2
 
 ------------------------------------------------------------
 library
-    Build-Depends:   base < 5, mtl >= 2.0.0.0 && < 3, time, old-locale, data-default
+    Build-Depends:   base < 5, mtl >= 2.0.0.0 && < 3, time, time-locale-compat, data-default
     Exposed-modules: UI.Command
     Other-modules:   UI.Command.App
-                     UI.Command.Application
-                     UI.Command.Command
-                     UI.Command.Doc
-                     UI.Command.Main
-                     UI.Command.Render
+                   , UI.Command.Application
+                   , UI.Command.Command
+                   , UI.Command.Doc
+                   , UI.Command.Main
+                   , UI.Command.Render
 
 ------------------------------------------------------------
 -- hello example
@@ -42,3 +42,11 @@ library
 Executable ui-cmd-hello
     Main-Is:         ui-cmd-hello.hs
     Hs-Source-Dirs:  ., examples
+    Other-modules:   UI.Command
+                   , UI.Command.App
+                   , UI.Command.Application
+                   , UI.Command.Command
+                   , UI.Command.Doc
+                   , UI.Command.Main
+                   , UI.Command.Render
+

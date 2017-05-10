@@ -1,9 +1,9 @@
 module UI.Command.App (
         App,
-	appArgs,
-	appConfig,
+        appArgs,
+        appConfig,
 
-	AppContext(..)
+        AppContext(..)
 ) where
 
 import Data.Default

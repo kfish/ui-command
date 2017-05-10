@@ -1,5 +1,5 @@
 module UI.Command.Main (
-	appMain,
+        appMain,
         appMainWithOptions
 ) where
 
@@ -27,7 +27,7 @@ initApp :: (Default opts, Default config)
         -> IO (AppContext config)
 initApp app args = do
         (config, args) <- processArgs app args
-	return $ AppContext config args
+        return $ AppContext config args
 
 processArgs :: (Default opts, Default config)
             => Application opts config -> [String]
@@ -50,16 +50,16 @@ processArgs app args = do
 appMain :: Application () () -> IO ()
 appMain app = do
         allArgs <- getArgs
-	when (any isHelp allArgs) $ showHelp app allArgs
-	when (any isVersion allArgs) $ showVersion app
-	handleCommand app allArgs
+        when (any isHelp allArgs) $ showHelp app allArgs
+        when (any isVersion allArgs) $ showVersion app
+        handleCommand app allArgs
 
 appMainWithOptions :: (Default opts, Default config) => Application opts config -> IO ()
 appMainWithOptions app = do
         allArgs <- getArgs
-	when (any isHelp allArgs) $ showHelp app allArgs
-	when (any isVersion allArgs) $ showVersion app
-	handleCommand app allArgs
+        when (any isHelp allArgs) $ showHelp app allArgs
+        when (any isVersion allArgs) $ showVersion app
+        handleCommand app allArgs
 
 helpStrings :: [[Char]]
 helpStrings = ["--help", "-h", "-?"]
@@ -76,7 +76,7 @@ isVersion x = elem x versionStrings
 showHelp :: (Default opts, Default config) => Application opts config -> [String] -> IO ()
 showHelp app args = do
         (initApp app args) >>= runReaderT (help app)
-	exitWith ExitSuccess
+        exitWith ExitSuccess
 
 showVersion :: (Default opts, Default config) => Application opts config -> IO ()
 showVersion app = do
@@ -93,10 +93,10 @@ handleCommand app (command:args)
         | otherwise = initApp app args >>= loop1
         where
                 showMan = initApp app args >>= loopMan
-	        loopMan st = runReaderT (man app) st
-	        loop1 st = runReaderT run st
+                loopMan st = runReaderT (man app) st
+                loop1 st = runReaderT run st
                 -- docCmds :: (Default config1) => [Command config1]
                 -- docCmds = [helpCmd{cmdHandler = help app}, manCmd{cmdHandler = man app}]
                 run = act $ filter (\x -> cmdName x == command) (appCmds app)
-	        act [] = helpErr app
-		act (s:_) = cmdHandler s
+                act [] = helpErr app
+                act (s:_) = cmdHandler s
